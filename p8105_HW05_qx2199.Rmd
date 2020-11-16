@@ -1,13 +1,10 @@
 ---
 title: "p8105_HW05_qx2199"
 output: html_document
-Author: Qianhui Xu
----
 
 ---
-title: "Homework 5"
-output: github_document
----
+
+
 
 ```{r setup, include = FALSE}
 library(tidyverse)
@@ -32,7 +29,7 @@ Read in the data.
 
 ```{r}
 homicide_df = 
-  read_csv("homicide_data/homicide-data.csv") %>% 
+  read_csv("./homicide-data.csv") %>% 
   mutate(
     city_state = str_c(city, state, sep = "_"),
     resolved = case_when(
@@ -90,32 +87,6 @@ results_df %>%
   geom_point() + 
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-```
-
-
-
-```{r, error = TRUE}
-city_prop_test = function(df) {
-  
-  n_unsovled ...
-  n_total ... 
-  
-  prop.test(.....)
-  
-}
-homicide_df = 
-  read_csv("data/homicide-data.csv") %>% 
-  mutate(
-    city_state = str_c(city, state, sep = "_"),
-    resolved = case_when(
-      disposition == "Closed without arrest" ~ "unsolved",
-      disposition == "Open/No arrest"        ~ "unsolved",
-      disposition == "Closed by arrest"      ~ "solved",
-    )
-  ) %>% 
-  select(city_state, resolved) %>% 
-  filter(city_state != "Tulsa_AL") %>% 
-  nest(data = resolved)
 ```
 
 
