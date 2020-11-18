@@ -9,6 +9,7 @@ output: html_document
 ```{r setup, include = FALSE}
 library(tidyverse)
 library(purrr)
+library(patchwork)
 knitr::opts_chunk$set(
   fig.width = 10,
   fig.asp = .6,
@@ -189,20 +190,73 @@ sim_mu_final =
 
 ```{r}
 sim_mu_final %>% 
-  mutate( mu= as.numeric(mu))
+  mutate( mu = as.factor(mu))
 ```
 
 Make a plot showing the proportion of times the null was rejected on the y axis and the true value of mean on the x axis.
 
+```{r}
+plot_one  =
+sim_mu_final  %>% 
+  group_by(mu) %>%
+  mutate(outcome = ifelse(p.value < 0.05, "reject", "not reject") )%>% 
+   summarize(num_reject = sum ( outcome == "reject"),
+             num_total= n()) %>% 
+  mutate(rejection_proportion = num_reject / num_total ) %>% 
+ggplot(aes(x = mu, y = rejection_proportion, fill = mu)) + geom_col() + theme(legend.position = "none") +labs(title = "Power of the test",x = "True value of mean",y = "Proportion of times the null was rejected"
+  )+theme(legend.position = "none") 
+
+plot_one 
+
+```
+
+
+```{r}
+plot_oneee  =
+sim_mu_final  %>% 
+  group_by(mu) %>%
+  mutate(outcome = ifelse(p.value < 0.05, "reject", "not reject") )%>% 
+  summarize(num_reject = sum ( outcome == "reject"),num_total= n()) %>% 
+  mutate(rejection_proportion = num_reject / num_total ) %>% 
+ggplot(aes(x = mu, y = rejection_proportion, fill = mu)) + geom_line() +labs(title = "Power of the test",x = "True value of mean",y = "Power")+scale_x_continuous( breaks = seq(0,6,1),limits =c(0,6))+scale_y_continuous( breaks = seq(0,1,.1),limits =c(0,1))
+
+plot_oneee 
+
+```
+From the plot, as the effect size, the true mean increases, the proportion of times the null also increases,which indicates that the poewer increases as our effect size increases. 
+
+
+* Q3.2 Make a plot showing the average estimate of `mu_hat` on the y axis and the true value of mean on the x axis.  
+Make a second plot showing the average estimate of `mu_hat` only in samples for which the null was rejected on the y axis and the true value of mean on the x axis. *
 
 
 
+```{r }
+plot2 =
+  sim_mu_final  %>% 
+  group_by(mu) %>% 
+  summarize(average_mu_hat = mean(mu_hat)) %>% 
+  ggplot(aes(x = mu, y = average_mu_hat)) +
+  geom_point() + geom_line() +
+  labs(
+    title = "Average estimate for all samples",
+    x = "True value of mean",
+    y = "average estimate of mu hat"
+  )+scale_x_continuous( breaks = seq(0,6,1),limits =c(0,6))+scale_y_continuous( breaks = seq(0,6,1),limits =c(0,6))
+
+plot3 = 
+  sim_mu_final  %>% 
+  mutate(outcome = ifelse(p.value < 0.05, "reject", "not reject") )%>% 
+  filter (outcome == "reject") %>% 
+  group_by(mu) %>% 
+  summarize(average_mu_hat_three = mean(mu_hat)) %>% 
+  ggplot(aes(x = mu, y = average_mu_hat_three)) + geom_point() + geom_line() +labs(
+    title = "Average estimate for samples for which the null was rejected",
+    x = "True value of mean",
+    y = "Average estimate of mu hat"
+  )+scale_x_continuous( breaks = seq(0,6,1),limits =c(0,6))+scale_y_continuous( breaks = seq(0,6,1),limits =c(0,6))
 
 
-
-
-
-
-
-
+plot2 + plot3
+```
 
