@@ -93,23 +93,35 @@ results_df %>%
 
 
 
-## Problem 2 ideas ...
+## Problem 2
 
-import one dataset 
+import and tidy dataset
+
 
 ```{r}
-data_1 = read_csv("lda_data/con_01.csv")
+problem_2_df = 
+  tibble(files = list.files(path = "./data",full.names = TRUE)) %>% 
+  mutate(file_contents = map(.x = files, ~read_csv(.x))) %>% 
+  unnest(file_contents) %>% 
+   pivot_longer(
+    week_1:week_8,
+    names_to = "week",
+    names_prefix = "week_",
+    values_to = "observation"
+  ) %>% 
+  mutate(files = str_replace(files, ".csv$", "")) %>% 
+  mutate(files = str_replace(files, "con", "control"),
+         files = str_replace(files, "exp", "experimental"))%>% 
+  separate(files, into = c("arms_old", "id"), sep = "\\_") %>%   separate (arms_old,into=c("dot","data","arm"), sep ="/") %>%
+  select(-dot,-data) %>% 
+  mutate(id = factor(id), arm = factor(arm), week = as.numeric(week)) %>% 
+  relocate(arm, id)
 ```
 
-```{r, error = TRUE}
-path_df = 
-  tibble(
-    path = list.files("lda_data"),
-  ) %>% 
-  mutate(
-    path = str_c("lda_data/", path),
-    data = map(.............))
-read_csv(path_df$path[[1]])
-```
+
+
+
+
+
 
 
