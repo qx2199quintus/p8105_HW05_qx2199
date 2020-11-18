@@ -8,6 +8,7 @@ output: html_document
 
 ```{r setup, include = FALSE}
 library(tidyverse)
+library(purrr)
 knitr::opts_chunk$set(
   fig.width = 6,
   fig.asp = .6,
@@ -107,21 +108,30 @@ problem_2_df =
     week_1:week_8,
     names_to = "week",
     names_prefix = "week_",
-    values_to = "observation"
+    values_to = "observations"
   ) %>% 
   mutate(files = str_replace(files, ".csv$", "")) %>% 
   mutate(files = str_replace(files, "con", "control"),
-         files = str_replace(files, "exp", "experimental"))%>% 
-  separate(files, into = c("arms_old", "id"), sep = "\\_") %>%   separate (arms_old,into=c("dot","data","arm"), sep ="/") %>%
+         files = str_replace(files, "exp", "experimental")) %>% 
+  separate(files, into = c("arms_old", "id"), sep = "\\_") %>%   
+  separate (arms_old,into=c("dot","data","arm"), sep ="/") %>%
   select(-dot,-data) %>% 
-  mutate(id = factor(id), arm = factor(arm), week = as.numeric(week)) %>% 
+  mutate(id = as.numeric(id), arm = as.factor(arm), week = as.numeric(week)) %>% 
   relocate(arm, id)
+
+problem_2_df
 ```
 
+Make a spaghetti plot showing observations on each subject over time, and comment on differences between groups.
 
+```{r}
+problem_2_plot=
+problem_2_df %>%
+  ggplot(aes(x = week, y = observations, group = interaction(id,arm),color=arm))  +scale_color_manual(values=c("#6495ED","#FF9966"))+
+  geom_line() + labs(  title = "Observations on each subject in experimental and control group over time",x = "week", y = "observations")
+problem_2_plot
+```
 
+Comment on differences between groups.
 
-
-
-
-
+We found that at week 1,the observed values in the control group and the experimental group are similar. During the following weeks we can see that  there's an increasing trend in the observed values in the experimental group, while in the control group there's not a increasing/decreasing trend, and the trend in terms of the observed values seems to be relatively stable in the control group. We could see at the difference in the two groups become larger after 8 weeks. The overall observed values in the experimental group is higher than that in the control group after 8.
