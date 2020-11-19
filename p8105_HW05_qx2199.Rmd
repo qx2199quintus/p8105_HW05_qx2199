@@ -223,7 +223,7 @@ ggplot(aes(x = mu, y = rejection_proportion, fill = mu)) + geom_line() +labs(tit
 plot_oneee 
 
 ```
-From the plot, as the effect size, the true mean increases, the proportion of times the null also increases,which indicates that the poewer increases as our effect size increases. 
+From the plot, we could see that as the effect size increases, the proportion of times that the null was rejected also increases, which indicates that the power increases as our effect size increases. The power is relative high, which approximate to 1 when the true value of mean equal to 4,5,and 6.
 
 
 * Q3.2 Make a plot showing the average estimate of `mu_hat` on the y axis and the true value of mean on the x axis.  
@@ -246,7 +246,7 @@ plot_two =
 
 plot_three = 
   sim_mu_final  %>% 
-   group_by(mu) %>% 
+  group_by(mu) %>% 
   filter(p.value < 0.05) %>% 
   summarize(average_mu_hat_three = mean(mu_hat)) %>% 
   ggplot(aes(x = mu, y = average_mu_hat_three)) + geom_point() + geom_line() +labs(
@@ -259,6 +259,15 @@ plot_three =
 plot_two + plot_three
 ```
 
-* Is the sample average of μ̂  across tests for which the null is rejected approximately equal to the true value of μ? Why or why not?
-When mu=3,4,5,6, the the sample average of μ̂  across tests for which the null is rejected approximately equal to the true value of μ. This is because
+* Is the sample average of μ hat  across tests for which the null is rejected approximately equal to the true value of μ? Why or why not?
 
+Firstly, from the left plot we could see that the estimated mean equals to ,because it follows normal distribution and CLT is followed. 
+*When μ, the true value of mean = 0,4,5,6, the the sample average of μ̂  across tests for which the null is rejected approximately equal to the true value of μ.*
+
+Specifically,when true value of mean = 0, the power is relatively low, and given that the values that we reject are always randomly distributed above or below 0, the estimated mean for these values will also approximate to 0.
+
+Specifically,when true value of mean = 4,5,6, the powers are relatively high which approximate to 1 and nearly all the tests reject the null. Therefore, the average estimated mean will be similar or very approximate to the true mean value.
+
+*When μ, the true value of mean = 1,2,3 the the sample average of μ̂  across tests for which the the null is rejected is higher than the true value of μ.*
+
+Specifically,when true value of mean = 1,2,3, the powers are relatively not high, and given that samples on the left of the distribution (smaller means) will not reject the null,most of the samples which is larger than estimated mean will rejected the null hypothesis, the average estimated mean will be higher than the true mean value.
