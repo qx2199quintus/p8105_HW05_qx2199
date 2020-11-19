@@ -1,6 +1,6 @@
 ---
 title: "p8105_HW05_qx2199"
-output: html_document
+output: github_document
 author: Qianhui Xu
 ---
 
