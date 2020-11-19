@@ -102,7 +102,7 @@ problem_1
 
 ## Problem 2
 
-import and tidy dataset
+import and tidy dataset.
 
 
 ```{r}
@@ -138,17 +138,19 @@ problem_2_df %>%
 problem_2_plot
 ```
 
-Comment on differences between groups.
+* Comment on differences between groups.
 
-We found that at week 1,the observed values in the control group and the experimental group are similar. During the following weeks we can see that  there's an increasing trend in the observed values in the experimental group, while in the control group,the observed value varies between -2.5 and 5, and there's not a increasing/decreasing trend in terms of the observed values, and the trendseems to be relatively stable in the control group. We could see at the difference in the two groups become larger after 8 weeks. The overall observed values in the experimental group is higher than that in the control group after 8.
+We found that at week 1,the observed values in the control group and the experimental group are similar. During the following weeks we can see that  there's an increasing trend in the observed values in the experimental group, while in the control group,the observed value seems to vary between -2.5 and 5. There's not a increasing/decreasing trend, and the trend seems to be relatively stable for the observed values in the control group. We could see that the difference of the ovserved values in the two groups become larger after 8 weeks. The overall observed values in the experimental group is higher than that in the control group after 8 weeks following-up.
 
 ## Problem 3
 
-Create the function
+
 
 ```{r}
 set.seed(1)
 ```
+
+Create the function
 
 ```{r}
 problem_3 = function(n = 30, mu, sigma = 5) 
@@ -166,7 +168,7 @@ problem_3 = function(n = 30, mu, sigma = 5)
 
 ```
 
-Run the function 5000 times, obtain the dataset of interest when mu=0, select the muhat and p.value. 
+Run the function 5000 times, obtain the dataset of interest when mu=0
 ```{r}
 output_mu = vector("list", 5000)
 for (i in 1:5000) {
@@ -175,6 +177,7 @@ for (i in 1:5000) {
  sim_results = bind_rows(output_mu)
 ```
 
+Create the dataset which contains the values we want when mu ranges from 0 to 6
 
 ```{r}
 sim_mu_final = 
@@ -184,9 +187,8 @@ sim_mu_final =
     other_mu_df = map(output_mu_other, bind_rows)
   ) %>% 
   select(-output_mu_other) %>% 
-  unnest(other_mu_df)
+  unnest(other_mu_df) 
 ```
-
 
 ```{r}
 sim_mu_final %>% 
@@ -200,30 +202,18 @@ plot_one  =
 sim_mu_final  %>% 
   group_by(mu) %>%
   mutate(outcome = ifelse(p.value < 0.05, "reject", "not reject") )%>% 
-   summarize(num_reject = sum ( outcome == "reject"),
-             num_total= n()) %>% 
-  mutate(rejection_proportion = num_reject / num_total ) %>% 
-ggplot(aes(x = mu, y = rejection_proportion, fill = mu)) + geom_col() + theme(legend.position = "none") +labs(title = "Power of the test",x = "True value of mean",y = "Proportion of times the null was rejected"
-  )+theme(legend.position = "none") 
-
-plot_one 
-
-```
-
-
-```{r}
-plot_oneee  =
-sim_mu_final  %>% 
-  group_by(mu) %>%
-  mutate(outcome = ifelse(p.value < 0.05, "reject", "not reject") )%>% 
   summarize(num_reject = sum ( outcome == "reject"),num_total= n()) %>% 
   mutate(rejection_proportion = num_reject / num_total ) %>% 
-ggplot(aes(x = mu, y = rejection_proportion, fill = mu)) + geom_line() +labs(title = "Power of the test",x = "True value of mean",y = "Power")+scale_x_continuous( breaks = seq(0,6,1),limits =c(0,6))+scale_y_continuous( breaks = seq(0,1,.1),limits =c(0,1))
+ggplot(aes(x = mu, y = rejection_proportion, fill = mu)) + geom_line() +labs(title = "Power of the test",x = "True value of mean",y = "Proportion of times the null was rejected")
 
-plot_oneee 
+plot_one
 
 ```
-From the plot, we could see that as the effect size increases, the proportion of times that the null was rejected also increases, which indicates that the power increases as our effect size increases. The power is relative high, which approximate to 1 when the true value of mean equal to 4,5,and 6.
+
+
+
+From the plot, we could see that as the effect size increases, the proportion of times that the null was rejected also increases, which indicates that the power increases as our effect size increases. The power is relative high, which approximate to 1 when the true values of mean equal to 4,5,and 6 when the effect size is relatively large.
+
 
 
 * Q3.2 Make a plot showing the average estimate of `mu_hat` on the y axis and the true value of mean on the x axis.  
@@ -259,15 +249,13 @@ plot_three =
 plot_two + plot_three
 ```
 
-* Is the sample average of μ hat  across tests for which the null is rejected approximately equal to the true value of μ? Why or why not?
+_Q3.2.1Is the sample average of μ hat  across tests for which the null is rejected approximately equal to the true value of μ? Why or why not?_
 
-Firstly, from the left plot we could see that the estimated mean equals to ,because it follows normal distribution and CLT is followed. 
-*When μ, the true value of mean = 0,4,5,6, the the sample average of μ̂  across tests for which the null is rejected approximately equal to the true value of μ.*
+Firstly, from the left plot we could see that the estimated mean equals to the true value of mean,because the dataset is normal distributed and follows central limit theorem. 
 
-Specifically,when true value of mean = 0, the power is relatively low, and given that the values that we reject are always randomly distributed above or below 0, the estimated mean for these values will also approximate to 0.
+From the plot two and plot three we could see that when μ, the true value of mean = 0,4,5,6, the the sample average of μ̂  across tests for which the null is rejected approximately equal to the true value of μ; 
+* Specifically,when true value of mean = 0, the power is relatively low, and given that the values that we reject are always randomly distributed above or below 0, the estimated mean for these values will also approximate to 0. 
+* Also,when true value of mean = 4,5,6, the powers are relatively high which approximate to 1 and nearly all the tests reject the null. Therefore, the average estimated mean will be similar or very approximate to the true mean value.
 
-Specifically,when true value of mean = 4,5,6, the powers are relatively high which approximate to 1 and nearly all the tests reject the null. Therefore, the average estimated mean will be similar or very approximate to the true mean value.
-
-*When μ, the true value of mean = 1,2,3 the the sample average of μ̂  across tests for which the the null is rejected is higher than the true value of μ.*
-
-Specifically,when true value of mean = 1,2,3, the powers are relatively not high, and given that samples on the left of the distribution (smaller means) will not reject the null,most of the samples which is larger than estimated mean will rejected the null hypothesis, the average estimated mean will be higher than the true mean value.
+From the plot two and plot three we could also see that when μ, the true value of mean = 1,2,3 the the sample average of μ hat across tests for which the the null is rejected is higher than the true value of μ.
+* Specifically,when true value of mean = 1,2,3, under this scenario, power is relatively increasing but not high enough. Samples on the left of the distribution (smaller means) will not reject the null while most of the samples which is larger than estimated mean will reject the null hypothesis, the average estimated mean will be higher than the true mean value.
